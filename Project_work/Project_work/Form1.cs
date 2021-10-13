@@ -41,7 +41,9 @@ namespace Project_work
         {
             Bitmap result = new Bitmap(PicBoxWidth, PicBoxHeight);
             using (Graphics g = Graphics.FromImage(result))
+            {
                 g.DrawImage(source_bitmap, shift_X, shift_Y, width, height);
+            }
             return result;
         }
         private void открытьToolStripMenuItem_Click(object sender, EventArgs e)
@@ -113,14 +115,18 @@ namespace Project_work
 
         private void Work_space_MouseUp(object sender, MouseEventArgs e)
         {
-            if (ActiveInst == "Создать прямоугольную область")
+            if (e.Button == System.Windows.Forms.MouseButtons.Right)
+            {
+                this.contextPicBox.Show(Cursor.Position.X, Cursor.Position.Y);
+            }
+            else if (ActiveInst == "Создать прямоугольную область")
             {
                 Work_space.Paint -= Selection_Paint;
                 Work_space.Paint += Work_space_Paint;
                 Work_space.Invalidate();
             }
 
-            else if (ActiveInst == "Перемещение") 
+            else if (ActiveInst == "Перемещение")
             {
                 Horisontal_shift = Horisontal_shift_tmp;
                 Vertical_shift = Vertical_shift_tmp;
@@ -139,7 +145,7 @@ namespace Project_work
 
             else if (ActiveInst == "Перемещение")
             {
-                if (e.Button == System.Windows.Forms.MouseButtons.Left) {
+                if (e.Button == System.Windows.Forms.MouseButtons.Left & original != null) {
                     Horisontal_shift_tmp = Cursor.Position.X - start_pos_to_shift_x + Horisontal_shift;
                     Vertical_shift_tmp = Cursor.Position.Y - start_pos_to_shift_y + Vertical_shift;
                     int PicBox_Width = Work_space.Width;
@@ -161,10 +167,21 @@ namespace Project_work
             scale_now = Scale.Value + 1;
             int PicBox_Width = Work_space.Width;
             int PicBox_Height = Work_space.Height;
-            Work_space.Image = ResizeBitmap(original, PicBox_Width, PicBox_Height, original.Width * scale_now / 100, original.Height * scale_now / 100, Horisontal_shift, Vertical_shift);
+            if (original != null)
+                Work_space.Image = ResizeBitmap(original, PicBox_Width, PicBox_Height, original.Width * scale_now / 100, original.Height * scale_now / 100, Horisontal_shift, Vertical_shift);
             Work_space.Refresh();
             System.GC.Collect();
             System.GC.WaitForPendingFinalizers();
+        }
+
+        private void WidthUpDown_ValueChanged(object sender, EventArgs e)
+        {
+            this.Work_space.Size = new System.Drawing.Size((int)WidthUpDown.Value, (int)HeightUpDown.Value);
+        }
+
+        private void HeightUpDown_ValueChanged(object sender, EventArgs e)
+        {
+            this.Work_space.Size = new System.Drawing.Size((int)WidthUpDown.Value, (int)HeightUpDown.Value);
         }
     }
 }

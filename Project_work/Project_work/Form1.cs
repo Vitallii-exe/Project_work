@@ -37,9 +37,9 @@ namespace Project_work
             StartPosition = FormStartPosition.CenterScreen;
         }
 
-        private static Bitmap ResizeBitmap(Bitmap source_bitmap, int width, int height, int shift_X = 0, int shift_Y = 0)
+        private static Bitmap ResizeBitmap(Bitmap source_bitmap, int PicBoxWidth, int PicBoxHeight, int width, int height, int shift_X = 0, int shift_Y = 0)
         {
-            Bitmap result = new Bitmap(source_bitmap.Width, source_bitmap.Height);
+            Bitmap result = new Bitmap(PicBoxWidth, PicBoxHeight);
             using (Graphics g = Graphics.FromImage(result))
                 g.DrawImage(source_bitmap, shift_X, shift_Y, width, height);
             return result;
@@ -142,7 +142,9 @@ namespace Project_work
                 if (e.Button == System.Windows.Forms.MouseButtons.Left) {
                     Horisontal_shift_tmp = Cursor.Position.X - start_pos_to_shift_x + Horisontal_shift;
                     Vertical_shift_tmp = Cursor.Position.Y - start_pos_to_shift_y + Vertical_shift;
-                    Work_space.Image = ResizeBitmap(original, original.Width * scale_now / 100, original.Height * scale_now / 100, Horisontal_shift_tmp, Vertical_shift_tmp);
+                    int PicBox_Width = Work_space.Width;
+                    int PicBox_Height = Work_space.Height;
+                    Work_space.Image = ResizeBitmap(original, PicBox_Width, PicBox_Height, original.Width * scale_now / 100, original.Height * scale_now / 100, Horisontal_shift_tmp, Vertical_shift_tmp);
                     Work_space.Refresh();
                 }
             }
@@ -157,7 +159,9 @@ namespace Project_work
         {
             Scale_label.Text = String.Format("{0} %", Scale.Value);
             scale_now = Scale.Value + 1;
-            Work_space.Image = ResizeBitmap(original, original.Width * scale_now / 100, original.Height * scale_now / 100, Horisontal_shift, Vertical_shift);
+            int PicBox_Width = Work_space.Width;
+            int PicBox_Height = Work_space.Height;
+            Work_space.Image = ResizeBitmap(original, PicBox_Width, PicBox_Height, original.Width * scale_now / 100, original.Height * scale_now / 100, Horisontal_shift, Vertical_shift);
             Work_space.Refresh();
             System.GC.Collect();
             System.GC.WaitForPendingFinalizers();

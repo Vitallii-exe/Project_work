@@ -29,6 +29,7 @@ namespace Project_work
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.cropping = new System.Windows.Forms.Button();
             this.create_area = new System.Windows.Forms.Button();
             this.moving_instr = new System.Windows.Forms.Button();
@@ -159,6 +160,7 @@ namespace Project_work
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.Work_space.BackColor = System.Drawing.Color.DimGray;
+            this.Work_space.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("Work_space.BackgroundImage")));
             this.Work_space.Location = new System.Drawing.Point(75, 41);
             this.Work_space.Name = "Work_space";
             this.Work_space.Size = new System.Drawing.Size(533, 400);

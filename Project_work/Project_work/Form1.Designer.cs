@@ -34,9 +34,9 @@ namespace Project_work
             this.cropping = new System.Windows.Forms.Button();
             this.create_area = new System.Windows.Forms.Button();
             this.moving_instr = new System.Windows.Forms.Button();
-            this.button3 = new System.Windows.Forms.Button();
-            this.button4 = new System.Windows.Forms.Button();
-            this.button5 = new System.Windows.Forms.Button();
+            this.brush = new System.Windows.Forms.Button();
+            this.pipette = new System.Windows.Forms.Button();
+            this.Apply_button = new System.Windows.Forms.Button();
             this.Work_space = new System.Windows.Forms.PictureBox();
             this.contextPicBox = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.вырезатьToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -68,18 +68,28 @@ namespace Project_work
             this.Scale = new System.Windows.Forms.TrackBar();
             this.Scale_label = new System.Windows.Forms.Label();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.label4 = new System.Windows.Forms.Label();
+            this.choose_color_button = new System.Windows.Forms.Button();
+            this.current_color_label = new System.Windows.Forms.Label();
+            this.opacity_UpDown = new System.Windows.Forms.NumericUpDown();
+            this.brush_width_label = new System.Windows.Forms.Label();
+            this.Brush_label = new System.Windows.Forms.Label();
+            this.scale_changing_label = new System.Windows.Forms.Label();
             this.HeightUpDown = new System.Windows.Forms.NumericUpDown();
             this.label3 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.WidthUpDown = new System.Windows.Forms.NumericUpDown();
             this.panel2 = new System.Windows.Forms.Panel();
+            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.Choose_color = new System.Windows.Forms.ColorDialog();
+            this.Eraser_button = new System.Windows.Forms.Button();
+            this.saveBitmapToFile = new System.Windows.Forms.SaveFileDialog();
             ((System.ComponentModel.ISupportInitialize)(this.Work_space)).BeginInit();
             this.contextPicBox.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.Scale)).BeginInit();
             this.panel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.opacity_UpDown)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.HeightUpDown)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.WidthUpDown)).BeginInit();
             this.panel2.SuspendLayout();
@@ -132,51 +142,55 @@ namespace Project_work
             this.moving_instr.UseVisualStyleBackColor = false;
             this.moving_instr.Click += new System.EventHandler(this.moving_instr_Click);
             // 
-            // button3
+            // brush
             // 
-            this.button3.BackColor = System.Drawing.Color.White;
-            this.button3.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.button3.Cursor = System.Windows.Forms.Cursors.Arrow;
-            this.button3.FlatAppearance.BorderSize = 0;
-            this.button3.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button3.Location = new System.Drawing.Point(12, 163);
-            this.button3.Name = "button3";
-            this.button3.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.button3.Size = new System.Drawing.Size(30, 30);
-            this.button3.TabIndex = 3;
-            this.button3.UseVisualStyleBackColor = false;
+            this.brush.BackColor = System.Drawing.Color.DimGray;
+            this.brush.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("brush.BackgroundImage")));
+            this.brush.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.brush.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.brush.FlatAppearance.BorderSize = 0;
+            this.brush.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.brush.Location = new System.Drawing.Point(12, 163);
+            this.brush.Name = "brush";
+            this.brush.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.brush.Size = new System.Drawing.Size(30, 30);
+            this.brush.TabIndex = 3;
+            this.brush.UseVisualStyleBackColor = false;
+            this.brush.Click += new System.EventHandler(this.brush_Click);
             // 
-            // button4
+            // pipette
             // 
-            this.button4.BackColor = System.Drawing.Color.White;
-            this.button4.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.button4.Cursor = System.Windows.Forms.Cursors.Arrow;
-            this.button4.FlatAppearance.BorderSize = 0;
-            this.button4.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button4.Location = new System.Drawing.Point(12, 199);
-            this.button4.Name = "button4";
-            this.button4.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.button4.Size = new System.Drawing.Size(30, 30);
-            this.button4.TabIndex = 4;
-            this.button4.UseVisualStyleBackColor = false;
+            this.pipette.BackColor = System.Drawing.Color.DimGray;
+            this.pipette.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("pipette.BackgroundImage")));
+            this.pipette.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.pipette.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.pipette.FlatAppearance.BorderSize = 0;
+            this.pipette.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.pipette.Location = new System.Drawing.Point(12, 199);
+            this.pipette.Name = "pipette";
+            this.pipette.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.pipette.Size = new System.Drawing.Size(30, 30);
+            this.pipette.TabIndex = 4;
+            this.pipette.UseVisualStyleBackColor = false;
             // 
-            // button5
+            // Apply_button
             // 
-            this.button5.BackColor = System.Drawing.Color.White;
-            this.button5.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.button5.Cursor = System.Windows.Forms.Cursors.Arrow;
-            this.button5.FlatAppearance.BorderSize = 0;
-            this.button5.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button5.Location = new System.Drawing.Point(12, 235);
-            this.button5.Name = "button5";
-            this.button5.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.button5.Size = new System.Drawing.Size(30, 30);
-            this.button5.TabIndex = 5;
-            this.button5.UseVisualStyleBackColor = false;
+            this.Apply_button.BackColor = System.Drawing.Color.DimGray;
+            this.Apply_button.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("Apply_button.BackgroundImage")));
+            this.Apply_button.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.Apply_button.Cursor = System.Windows.Forms.Cursors.Arrow;
+            this.Apply_button.FlatAppearance.BorderSize = 0;
+            this.Apply_button.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.Apply_button.Location = new System.Drawing.Point(12, 411);
+            this.Apply_button.Name = "Apply_button";
+            this.Apply_button.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.Apply_button.Size = new System.Drawing.Size(30, 30);
+            this.Apply_button.TabIndex = 5;
+            this.Apply_button.UseVisualStyleBackColor = false;
             // 
             // Work_space
             // 
-            this.Work_space.BackColor = System.Drawing.Color.DimGray;
+            this.Work_space.BackColor = System.Drawing.Color.Black;
             this.Work_space.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("Work_space.BackgroundImage")));
             this.Work_space.ContextMenuStrip = this.contextPicBox;
             this.Work_space.Cursor = System.Windows.Forms.Cursors.Default;
@@ -263,20 +277,21 @@ namespace Project_work
             // Open_from_file
             // 
             this.Open_from_file.Name = "Open_from_file";
-            this.Open_from_file.Size = new System.Drawing.Size(201, 26);
+            this.Open_from_file.Size = new System.Drawing.Size(224, 26);
             this.Open_from_file.Text = "Открыть";
             this.Open_from_file.Click += new System.EventHandler(this.открытьToolStripMenuItem_Click);
             // 
             // сохранитьToolStripMenuItem
             // 
             this.сохранитьToolStripMenuItem.Name = "сохранитьToolStripMenuItem";
-            this.сохранитьToolStripMenuItem.Size = new System.Drawing.Size(201, 26);
+            this.сохранитьToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
             this.сохранитьToolStripMenuItem.Text = "Сохранить";
+            this.сохранитьToolStripMenuItem.Click += new System.EventHandler(this.сохранитьToolStripMenuItem_Click);
             // 
             // сохранитьКакToolStripMenuItem
             // 
             this.сохранитьКакToolStripMenuItem.Name = "сохранитьКакToolStripMenuItem";
-            this.сохранитьКакToolStripMenuItem.Size = new System.Drawing.Size(201, 26);
+            this.сохранитьКакToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
             this.сохранитьКакToolStripMenuItem.Text = "Сохранить как...";
             // 
             // редактированиеToolStripMenuItem
@@ -424,7 +439,12 @@ namespace Project_work
             this.panel1.AutoSize = true;
             this.panel1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panel1.Controls.Add(this.label4);
+            this.panel1.Controls.Add(this.choose_color_button);
+            this.panel1.Controls.Add(this.current_color_label);
+            this.panel1.Controls.Add(this.opacity_UpDown);
+            this.panel1.Controls.Add(this.brush_width_label);
+            this.panel1.Controls.Add(this.Brush_label);
+            this.panel1.Controls.Add(this.scale_changing_label);
             this.panel1.Controls.Add(this.HeightUpDown);
             this.panel1.Controls.Add(this.label3);
             this.panel1.Controls.Add(this.label2);
@@ -439,15 +459,82 @@ namespace Project_work
             this.panel1.Size = new System.Drawing.Size(276, 400);
             this.panel1.TabIndex = 13;
             // 
-            // label4
+            // choose_color_button
             // 
-            this.label4.AutoSize = true;
-            this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label4.Location = new System.Drawing.Point(3, 303);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(268, 17);
-            this.label4.TabIndex = 10;
-            this.label4.Text = "Изменение размера изображения:";
+            this.choose_color_button.BackColor = System.Drawing.Color.DimGray;
+            this.choose_color_button.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.choose_color_button.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.choose_color_button.FlatAppearance.BorderSize = 0;
+            this.choose_color_button.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.choose_color_button.Location = new System.Drawing.Point(126, 199);
+            this.choose_color_button.Name = "choose_color_button";
+            this.choose_color_button.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.choose_color_button.Size = new System.Drawing.Size(130, 30);
+            this.choose_color_button.TabIndex = 15;
+            this.choose_color_button.UseVisualStyleBackColor = false;
+            this.choose_color_button.Click += new System.EventHandler(this.choose_color_button_Click);
+            // 
+            // current_color_label
+            // 
+            this.current_color_label.AutoSize = true;
+            this.current_color_label.Location = new System.Drawing.Point(16, 206);
+            this.current_color_label.Name = "current_color_label";
+            this.current_color_label.Size = new System.Drawing.Size(104, 17);
+            this.current_color_label.TabIndex = 14;
+            this.current_color_label.Text = "Текущий цвет:";
+            // 
+            // opacity_UpDown
+            // 
+            this.opacity_UpDown.BackColor = System.Drawing.Color.DimGray;
+            this.opacity_UpDown.Location = new System.Drawing.Point(175, 155);
+            this.opacity_UpDown.Maximum = new decimal(new int[] {
+            8400,
+            0,
+            0,
+            0});
+            this.opacity_UpDown.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.opacity_UpDown.Name = "opacity_UpDown";
+            this.opacity_UpDown.Size = new System.Drawing.Size(81, 22);
+            this.opacity_UpDown.TabIndex = 13;
+            this.opacity_UpDown.Value = new decimal(new int[] {
+            10,
+            0,
+            0,
+            0});
+            this.opacity_UpDown.ValueChanged += new System.EventHandler(this.opacity_UpDown_ValueChanged);
+            // 
+            // brush_width_label
+            // 
+            this.brush_width_label.AutoSize = true;
+            this.brush_width_label.Location = new System.Drawing.Point(16, 157);
+            this.brush_width_label.Name = "brush_width_label";
+            this.brush_width_label.Size = new System.Drawing.Size(157, 17);
+            this.brush_width_label.TabIndex = 12;
+            this.brush_width_label.Text = "Толщина (в пикселях):";
+            // 
+            // Brush_label
+            // 
+            this.Brush_label.AutoSize = true;
+            this.Brush_label.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.Brush_label.Location = new System.Drawing.Point(16, 121);
+            this.Brush_label.Name = "Brush_label";
+            this.Brush_label.Size = new System.Drawing.Size(56, 17);
+            this.Brush_label.TabIndex = 11;
+            this.Brush_label.Text = "Кисть:";
+            // 
+            // scale_changing_label
+            // 
+            this.scale_changing_label.AutoSize = true;
+            this.scale_changing_label.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.scale_changing_label.Location = new System.Drawing.Point(3, 303);
+            this.scale_changing_label.Name = "scale_changing_label";
+            this.scale_changing_label.Size = new System.Drawing.Size(268, 17);
+            this.scale_changing_label.TabIndex = 10;
+            this.scale_changing_label.Text = "Изменение размера изображения:";
             // 
             // HeightUpDown
             // 
@@ -537,6 +624,29 @@ namespace Project_work
             this.panel2.Size = new System.Drawing.Size(675, 400);
             this.panel2.TabIndex = 14;
             // 
+            // toolTip1
+            // 
+            this.toolTip1.OwnerDraw = true;
+            this.toolTip1.Tag = "gfcdcgvhj";
+            this.toolTip1.ToolTipIcon = System.Windows.Forms.ToolTipIcon.Info;
+            this.toolTip1.ToolTipTitle = "vghcfghjkhvg";
+            // 
+            // Eraser_button
+            // 
+            this.Eraser_button.BackColor = System.Drawing.Color.DimGray;
+            this.Eraser_button.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("Eraser_button.BackgroundImage")));
+            this.Eraser_button.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.Eraser_button.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.Eraser_button.FlatAppearance.BorderSize = 0;
+            this.Eraser_button.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.Eraser_button.Location = new System.Drawing.Point(12, 235);
+            this.Eraser_button.Name = "Eraser_button";
+            this.Eraser_button.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.Eraser_button.Size = new System.Drawing.Size(30, 30);
+            this.Eraser_button.TabIndex = 15;
+            this.Eraser_button.UseVisualStyleBackColor = false;
+            this.Eraser_button.Click += new System.EventHandler(this.Eraser_button_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -544,11 +654,12 @@ namespace Project_work
             this.AutoScroll = true;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.ClientSize = new System.Drawing.Size(1038, 673);
+            this.Controls.Add(this.Eraser_button);
             this.Controls.Add(this.panel2);
             this.Controls.Add(this.panel1);
-            this.Controls.Add(this.button5);
-            this.Controls.Add(this.button4);
-            this.Controls.Add(this.button3);
+            this.Controls.Add(this.Apply_button);
+            this.Controls.Add(this.pipette);
+            this.Controls.Add(this.brush);
             this.Controls.Add(this.moving_instr);
             this.Controls.Add(this.create_area);
             this.Controls.Add(this.cropping);
@@ -566,6 +677,7 @@ namespace Project_work
             ((System.ComponentModel.ISupportInitialize)(this.Scale)).EndInit();
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.opacity_UpDown)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.HeightUpDown)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.WidthUpDown)).EndInit();
             this.panel2.ResumeLayout(false);
@@ -579,9 +691,9 @@ namespace Project_work
         private System.Windows.Forms.Button cropping;
         private System.Windows.Forms.Button create_area;
         private System.Windows.Forms.Button moving_instr;
-        private System.Windows.Forms.Button button3;
-        private System.Windows.Forms.Button button4;
-        private System.Windows.Forms.Button button5;
+        private System.Windows.Forms.Button brush;
+        private System.Windows.Forms.Button pipette;
+        private System.Windows.Forms.Button Apply_button;
         private System.Windows.Forms.PictureBox Work_space;
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.ToolStripMenuItem файлToolStripMenuItem;
@@ -618,8 +730,17 @@ namespace Project_work
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.NumericUpDown HeightUpDown;
-        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Label scale_changing_label;
         private System.Windows.Forms.Panel panel2;
+        private System.Windows.Forms.ToolTip toolTip1;
+        private System.Windows.Forms.Label current_color_label;
+        private System.Windows.Forms.NumericUpDown opacity_UpDown;
+        private System.Windows.Forms.Label brush_width_label;
+        private System.Windows.Forms.Label Brush_label;
+        private System.Windows.Forms.Button choose_color_button;
+        private System.Windows.Forms.ColorDialog Choose_color;
+        private System.Windows.Forms.Button Eraser_button;
+        private System.Windows.Forms.SaveFileDialog saveBitmapToFile;
     }
 }
 

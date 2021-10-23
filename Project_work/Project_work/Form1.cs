@@ -12,39 +12,12 @@ namespace Project_work
 {
     public partial class Form1 : Form
     {
-        Rectangle selRect;
-        Point orig;
-        Pen pen = new Pen(Brushes.Black, 0.8f) { DashStyle = System.Drawing.Drawing2D.DashStyle.Dash };
-        Pen pen_finished = new Pen(Brushes.Red, 0.9f) { DashStyle = System.Drawing.Drawing2D.DashStyle.Dash };
-        string ActiveInst = "Перемещение";
-        Bitmap original;
-
-        int scale_now = 100;
-
-
-        int start_pos_to_shift_x = 0;
-        int start_pos_to_shift_y = 0;
-
-        int Horisontal_shift_tmp = 0;
-        int Vertical_shift_tmp = 0;
-
-        int Horisontal_shift = 0;
-        int Vertical_shift = 0;
-
+        enum instruments {Перемещение, Выделение, Обрезка, Кисть, Пипетка, Ластик};
+        Layer work_layer = new Layer();
         public Form1()
         {
             InitializeComponent();
             StartPosition = FormStartPosition.CenterScreen;
-        }
-
-        private static Bitmap ResizeBitmap(Bitmap source_bitmap, int PicBoxWidth, int PicBoxHeight, int width, int height, int shift_X = 0, int shift_Y = 0)
-        {
-            Bitmap result = new Bitmap(PicBoxWidth, PicBoxHeight);
-            using (Graphics g = Graphics.FromImage(result))
-            {
-                g.DrawImage(source_bitmap, shift_X, shift_Y, width, height);
-            }
-            return result;
         }
         private void открытьToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -55,8 +28,19 @@ namespace Project_work
             {
                 try 
                 {
-                    Work_space.Image = new Bitmap(FD.FileName);
-                    original = new Bitmap(FD.FileName);
+                    work_layer = new Layer();
+                    Bitmap orig = new Bitmap(FD.FileName);
+                    Bitmap clone = new Bitmap(orig.Width, orig.Height,
+                                              System.Drawing.Imaging.PixelFormat.Format32bppPArgb);
+
+                    using (Graphics gr = Graphics.FromImage(clone))
+                    {
+                        gr.DrawImage(orig, new Rectangle(0, 0, clone.Width, clone.Height));
+                    }
+                    //Work_space.Image = new Bitmap(FD.FileName);
+                    // work_layer.original = new Bitmap(FD.FileName);
+                    Work_space.Image = clone;
+                    work_layer.original = clone;
                 }
                 catch {
                     MessageBox.Show("Выбранный файл невозможно открыть. Данный тип файла не поддерживается!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -67,49 +51,41 @@ namespace Project_work
         private void moving_instr_Click(object sender, EventArgs e)
         {
             this.Cursor = Cursors.SizeAll;
-            ActiveInst = "Перемещение";
+            work_layer.Active_instr = (int)instruments.Перемещение;
         }
 
-        private void Selection_Paint(object sender, PaintEventArgs e)
+        private void brush_Click(object sender, EventArgs e)
         {
-            e.Graphics.DrawRectangle(pen, selRect);
+            work_layer.Active_instr = (int)instruments.Кисть;
         }
 
-        void Work_space_Paint(object sender, PaintEventArgs e)
+        private void create_area_Click(object sender, EventArgs e)
         {
-            e.Graphics.DrawRectangle(pen_finished, selRect);
+            work_layer.Active_instr = (int)instruments.Выделение;
         }
 
-        Rectangle GetSelRectangle(Point orig, Point location)
+        private void Eraser_button_Click(object sender, EventArgs e)
         {
-            int deltaX = location.X - orig.X, deltaY = location.Y - orig.Y;
-            Size s = new Size(Math.Abs(deltaX), Math.Abs(deltaY));
-            Rectangle rect = new Rectangle();
-            if (deltaX >= 0 & deltaY >= 0)
-                rect = new Rectangle(orig, s);
-            if (deltaX < 0 & deltaY > 0)
-                rect = new Rectangle(location.X, orig.Y, s.Width, s.Height);
-            if (deltaX < 0 & deltaY < 0)
-                rect = new Rectangle(location, s);
-            if (deltaX > 0 & deltaY < 0)
-                rect = new Rectangle(orig.X, location.Y, s.Width, s.Height);
-            return rect;
+            work_layer.Active_instr = (int)instruments.Ластик;
         }
 
         private void Work_space_MouseDown(object sender, MouseEventArgs e)
         {
-            if (ActiveInst == "Создать прямоугольную область")
+            if (work_layer.Active_instr == (int)instruments.Выделение)
             {
-                Work_space.Paint -= Work_space_Paint;
-                Work_space.Paint += Selection_Paint;
-                orig = e.Location;
+                work_layer.start_position_selection = e.Location;
             }
 
-            else if (ActiveInst == "Перемещение") 
+            if (work_layer.Active_instr == (int)instruments.Кисть)
             {
-                start_pos_to_shift_x = Cursor.Position.X;
-                start_pos_to_shift_y = Cursor.Position.Y;
-               
+                Point relative_current_position = new Point(e.Location.X * 100 / work_layer.scale - work_layer.shift.X, 
+                                                            e.Location.Y * 100 / work_layer.scale - work_layer.shift.Y);
+                work_layer.last_position = relative_current_position;
+            }
+
+            else if (work_layer.Active_instr == (int)instruments.Перемещение) 
+            {
+                work_layer.start_position = Cursor.Position;
             }
         }
 
@@ -119,56 +95,107 @@ namespace Project_work
             {
                 this.contextPicBox.Show(Cursor.Position.X, Cursor.Position.Y);
             }
-            else if (ActiveInst == "Создать прямоугольную область")
+            else if (work_layer.Active_instr == (int)instruments.Выделение)
             {
-                Work_space.Paint -= Selection_Paint;
-                Work_space.Paint += Work_space_Paint;
-                Work_space.Invalidate();
+                Pen finished_selection_pen = work_layer.selection_pen;
+                finished_selection_pen.Brush = Brushes.Lime;
+                using (Graphics g = Graphics.FromImage(Work_space.Image))
+                    g.DrawRectangle(finished_selection_pen, work_layer.selection);
+                Work_space.Image = work_layer.CropBitmap((Bitmap)Work_space.Image, work_layer.selection);
+                Work_space.Refresh();
+
             }
 
-            else if (ActiveInst == "Перемещение")
+            else if (work_layer.Active_instr == (int)instruments.Перемещение)
             {
-                Horisontal_shift = Horisontal_shift_tmp;
-                Vertical_shift = Vertical_shift_tmp;
+                work_layer.shift = work_layer.shift_tmp;
             }
 
             }
 
         private void Work_space_MouseMove(object sender, MouseEventArgs e)
         {
-            if (ActiveInst == "Создать прямоугольную область")
-            {
-                selRect = GetSelRectangle(orig, e.Location);
-                if (e.Button == System.Windows.Forms.MouseButtons.Left)
-                    (sender as PictureBox).Refresh();
+            if (e.Button == System.Windows.Forms.MouseButtons.Left & work_layer.Active_instr == (int)instruments.Ластик) {
+                Point relative_current_position = new Point((e.Location.X - work_layer.shift.X) * 100 / work_layer.scale, 
+                                                            (e.Location.Y - work_layer.shift.Y) * 100 / work_layer.scale);
+
+                for (int i = relative_current_position.X - 5; i < relative_current_position.X + 5; i++)
+                {
+                    for (int j = relative_current_position.Y - 5; j < relative_current_position.Y + 5; j++)
+                    {
+                        work_layer.original.SetPixel(i, j, Color.Transparent);
+                    }
+                }
+                //work_layer.original.MakeTransparent(Color.Transparent);
+                Work_space.Image = work_layer.ResizeBitmap(work_layer.original, Work_space.Width, Work_space.Height,
+                                                           work_layer.original.Width * work_layer.scale / 100,
+                                                           work_layer.original.Height * work_layer.scale / 100,
+                                                           work_layer.shift.X, work_layer.shift.Y);
+                Work_space.Refresh();
+                return;
             }
 
-            else if (ActiveInst == "Перемещение")
+                if (e.Button == System.Windows.Forms.MouseButtons.Left & work_layer.Active_instr == (int)instruments.Кисть)
             {
-                if (e.Button == System.Windows.Forms.MouseButtons.Left & original != null) {
-                    Horisontal_shift_tmp = Cursor.Position.X - start_pos_to_shift_x + Horisontal_shift;
-                    Vertical_shift_tmp = Cursor.Position.Y - start_pos_to_shift_y + Vertical_shift;
+                Point relative_current_position = new Point((e.Location.X - work_layer.shift.X) * 100 / work_layer.scale, (e.Location.Y - work_layer.shift.Y) * 100 / work_layer.scale);
+
+                work_layer.original = Layer.BrushDraw(work_layer.original, work_layer.layer_pen, work_layer.last_position, relative_current_position);
+                Work_space.Image = work_layer.ResizeBitmap(work_layer.original, Work_space.Width, Work_space.Height,
+                                                           work_layer.original.Width * work_layer.scale / 100,
+                                                           work_layer.original.Height * work_layer.scale / 100,
+                                                           work_layer.shift.X, work_layer.shift.Y);
+                work_layer.last_position = relative_current_position;
+                Work_space.Refresh();
+                return;
+            }
+
+            else if (work_layer.Active_instr == (int)instruments.Выделение & e.Button == System.Windows.Forms.MouseButtons.Left)
+            {
+                if (work_layer.original != null)
+                    Work_space.Image = work_layer.ResizeBitmap(work_layer.original, Work_space.Width, Work_space.Height, 
+                                                               work_layer.original.Width * work_layer.scale / 100, 
+                                                               work_layer.original.Height * work_layer.scale / 100, 
+                                                               work_layer.shift.X, work_layer.shift.Y);
+
+                work_layer.selection = work_layer.GetSelRectangle(work_layer.start_position_selection, e.Location);
+                using (Graphics g = Graphics.FromImage(Work_space.Image))
+                    g.DrawRectangle(work_layer.selection_pen, work_layer.selection);
+                Work_space.Refresh();
+                return;
+            }
+
+            else if (work_layer.Active_instr == (int)instruments.Перемещение)
+            {
+                if (e.Button == System.Windows.Forms.MouseButtons.Left & work_layer.original != null)
+                {
+                    work_layer.shift_tmp.X = Cursor.Position.X - work_layer.start_position.X + work_layer.shift.X;
+                    work_layer.shift_tmp.Y = Cursor.Position.Y - work_layer.start_position.Y + work_layer.shift.Y;
                     int PicBox_Width = Work_space.Width;
                     int PicBox_Height = Work_space.Height;
-                    Work_space.Image = ResizeBitmap(original, PicBox_Width, PicBox_Height, original.Width * scale_now / 100, original.Height * scale_now / 100, Horisontal_shift_tmp, Vertical_shift_tmp);
+                    Work_space.Image = work_layer.ResizeBitmap(work_layer.original, PicBox_Width, PicBox_Height,
+                                                               work_layer.original.Width * work_layer.scale / 100,
+                                                               work_layer.original.Height * work_layer.scale / 100,
+                                                               work_layer.shift_tmp.X, work_layer.shift_tmp.Y);
                     Work_space.Refresh();
+                    System.GC.Collect();
+                    System.GC.WaitForPendingFinalizers();
                 }
+                return;
             }
-        }
-
-        private void create_area_Click(object sender, EventArgs e)
-        {
-            ActiveInst = "Создать прямоугольную область";
         }
 
         private void Scale_Scroll(object sender, EventArgs e)
         {
             Scale_label.Text = String.Format("{0} %", Scale.Value);
-            scale_now = Scale.Value + 1;
+            work_layer.scale = Scale.Value + 1;
             int PicBox_Width = Work_space.Width;
             int PicBox_Height = Work_space.Height;
-            if (original != null)
-                Work_space.Image = ResizeBitmap(original, PicBox_Width, PicBox_Height, original.Width * scale_now / 100, original.Height * scale_now / 100, Horisontal_shift, Vertical_shift);
+            if (work_layer.original != null)
+                Work_space.Image = work_layer.ResizeBitmap(work_layer.original, 
+                                                           PicBox_Width, PicBox_Height, 
+                                                           work_layer.original.Width * work_layer.scale / 100, 
+                                                           work_layer.original.Height * work_layer.scale / 100, 
+                                                           work_layer.shift.X, work_layer.shift.Y);
             Work_space.Refresh();
             System.GC.Collect();
             System.GC.WaitForPendingFinalizers();
@@ -177,11 +204,42 @@ namespace Project_work
         private void WidthUpDown_ValueChanged(object sender, EventArgs e)
         {
             this.Work_space.Size = new System.Drawing.Size((int)WidthUpDown.Value, (int)HeightUpDown.Value);
+            Work_space.Refresh();
         }
 
         private void HeightUpDown_ValueChanged(object sender, EventArgs e)
         {
             this.Work_space.Size = new System.Drawing.Size((int)WidthUpDown.Value, (int)HeightUpDown.Value);
+            Work_space.Refresh();
+        }
+
+        private void opacity_UpDown_ValueChanged(object sender, EventArgs e)
+        {
+            work_layer.layer_pen.Width = (float)opacity_UpDown.Value;
+        }
+
+        private void choose_color_button_Click(object sender, EventArgs e)
+        {
+            if (Choose_color.ShowDialog() == DialogResult.OK) {
+                work_layer.layer_pen.Color = Choose_color.Color;
+                choose_color_button.BackColor = Choose_color.Color;
+            }
+        }
+
+        private void сохранитьToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            saveBitmapToFile.Filter = "Image Files(*.BMP;*.JPG;*.PNG;*.ICO)|*.BMP;*.JPG;*.PNG;*.ICO|All files(*.*)|*.*";
+            if (saveBitmapToFile.ShowDialog() == DialogResult.OK)
+            {
+                try
+                {
+                    work_layer.original.Save(saveBitmapToFile.FileName);
+                }
+                catch
+                {
+                    MessageBox.Show("Возникла ошибка записи. Возможно, вы пытаетесь сохранить картинку, не содержащую ни одного пикселя.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
         }
     }
 }

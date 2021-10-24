@@ -8,6 +8,7 @@ namespace Project_work
     public partial class Form1 : Form
     {
         enum instruments { Перемещение, Выделение, Обрезка, Кисть, Пипетка, Ластик };
+        enum states { Ждуприменения };
         //Layer work_layer = new Layer();
         List<Layer> work_layer_list = new List<Layer>();
         int CurrentLayerIndex = 0;
@@ -103,23 +104,33 @@ namespace Project_work
             work_layer_list[CurrentLayerIndex].Active_instr = (int)instruments.Ластик;
         }
 
+        private void cropping_Click(object sender, EventArgs e)
+        {
+            work_layer_list[CurrentLayerIndex].Active_instr = (int)instruments.Обрезка;
+        }
+
         private void Work_space_MouseDown(object sender, MouseEventArgs e)
         {
-            if (work_layer_list[CurrentLayerIndex].Active_instr == (int)instruments.Выделение)
+            Point relative_current_position = new Point((e.Location.X - work_layer_list[CurrentLayerIndex].shift.X) * 100 / work_layer_list[CurrentLayerIndex].scale,
+                                                            (e.Location.Y - work_layer_list[CurrentLayerIndex].shift.Y) * 100 / work_layer_list[CurrentLayerIndex].scale);
+            if (work_layer_list[CurrentLayerIndex].Active_instr == (int)instruments.Выделение
+                | work_layer_list[CurrentLayerIndex].Active_instr == (int)instruments.Обрезка)
             {
                 work_layer_list[CurrentLayerIndex].start_position_selection = e.Location;
+                return;
             }
 
-            if (work_layer_list[CurrentLayerIndex].Active_instr == (int)instruments.Кисть)
+
+            else if (work_layer_list[CurrentLayerIndex].Active_instr == (int)instruments.Кисть)
             {
-                Point relative_current_position = new Point((e.Location.X - work_layer_list[CurrentLayerIndex].shift.X) * 100 / work_layer_list[CurrentLayerIndex].scale,
-                                                            (e.Location.Y - work_layer_list[CurrentLayerIndex].shift.Y) * 100 / work_layer_list[CurrentLayerIndex].scale);
                 work_layer_list[CurrentLayerIndex].last_position = relative_current_position;
+                return;
             }
 
             else if (work_layer_list[CurrentLayerIndex].Active_instr == (int)instruments.Перемещение)
             {
                 work_layer_list[CurrentLayerIndex].start_position = Cursor.Position;
+                return;
             }
         }
 
@@ -129,13 +140,24 @@ namespace Project_work
             {
                 this.contextPicBox.Show(Cursor.Position.X, Cursor.Position.Y);
             }
-            else if (work_layer_list[CurrentLayerIndex].Active_instr == (int)instruments.Выделение)
+            else if (work_layer_list[CurrentLayerIndex].Active_instr == (int)instruments.Выделение
+                     | work_layer_list[CurrentLayerIndex].Active_instr == (int)instruments.Обрезка)
             {
+                work_layer_list[CurrentLayerIndex].Current_state = (int)states.Ждуприменения;
+
                 Pen finished_selection_pen = work_layer_list[CurrentLayerIndex].selection_pen;
-                finished_selection_pen.Brush = Brushes.Lime;
+                switch (work_layer_list[CurrentLayerIndex].Active_instr) {
+                    case (int)instruments.Обрезка:
+                        finished_selection_pen.Brush = Brushes.Red;
+                        break;
+                    case (int)instruments.Выделение:
+                        finished_selection_pen.Brush = Brushes.Lime;
+                        break;
+                }
                 using (Graphics g = Graphics.FromImage(Work_space.Image))
                     g.DrawRectangle(finished_selection_pen, work_layer_list[CurrentLayerIndex].selection);
-                Work_space.Image = work_layer_list[CurrentLayerIndex].CropBitmap((Bitmap)Work_space.Image, work_layer_list[CurrentLayerIndex].selection);
+                //Work_space.Image = work_layer_list[CurrentLayerIndex].CropBitmap((Bitmap)Work_space.Image, work_layer_list[CurrentLayerIndex].selection);
+                
                 Work_space.Refresh();
                 pictureBox_preview.BackgroundImage = work_layer_list[CurrentLayerIndex].original;
                 pictureBox_preview.Refresh();
@@ -152,11 +174,9 @@ namespace Project_work
         private void Work_space_MouseMove(object sender, MouseEventArgs e)
         {   if (CurrentLayerIndex < work_layer_list.Count)
             {
+                Point relative_current_position = new Point((e.Location.X - work_layer_list[CurrentLayerIndex].shift.X) * 100 / work_layer_list[CurrentLayerIndex].scale, (e.Location.Y - work_layer_list[CurrentLayerIndex].shift.Y) * 100 / work_layer_list[CurrentLayerIndex].scale);
                 if (e.Button == System.Windows.Forms.MouseButtons.Left & work_layer_list[CurrentLayerIndex].Active_instr == (int)instruments.Ластик)
                 {
-                    Point relative_current_position = new Point((e.Location.X - work_layer_list[CurrentLayerIndex].shift.X) * 100 / work_layer_list[CurrentLayerIndex].scale,
-                                                                (e.Location.Y - work_layer_list[CurrentLayerIndex].shift.Y) * 100 / work_layer_list[CurrentLayerIndex].scale);
-
                     for (int i = relative_current_position.X - 5; i < relative_current_position.X + 5; i++)
                     {
                         for (int j = relative_current_position.Y - 5; j < relative_current_position.Y + 5; j++)
@@ -173,8 +193,6 @@ namespace Project_work
 
                 if (e.Button == System.Windows.Forms.MouseButtons.Left & work_layer_list[CurrentLayerIndex].Active_instr == (int)instruments.Кисть)
                 {
-                    Point relative_current_position = new Point((e.Location.X - work_layer_list[CurrentLayerIndex].shift.X) * 100 / work_layer_list[CurrentLayerIndex].scale, (e.Location.Y - work_layer_list[CurrentLayerIndex].shift.Y) * 100 / work_layer_list[CurrentLayerIndex].scale);
-
                     work_layer_list[CurrentLayerIndex].original = Layer.BrushDraw(work_layer_list[CurrentLayerIndex].original, work_layer_list[CurrentLayerIndex].layer_pen, work_layer_list[CurrentLayerIndex].last_position, relative_current_position);
                     Work_space.Image = DrawLayersList(work_layer_list);
                     work_layer_list[CurrentLayerIndex].last_position = relative_current_position;
@@ -184,7 +202,8 @@ namespace Project_work
                     return;
                 }
 
-                else if (work_layer_list[CurrentLayerIndex].Active_instr == (int)instruments.Выделение & e.Button == System.Windows.Forms.MouseButtons.Left)
+                else if ((work_layer_list[CurrentLayerIndex].Active_instr == (int)instruments.Выделение
+                         | work_layer_list[CurrentLayerIndex].Active_instr == (int)instruments.Обрезка) & e.Button == System.Windows.Forms.MouseButtons.Left)
                 {
                     if (work_layer_list[CurrentLayerIndex].original != null)
                         Work_space.Image = DrawLayersList(work_layer_list);
@@ -287,6 +306,25 @@ namespace Project_work
                 pictureBox_preview.Refresh();
             }
             else LayerUpDown.Value = work_layer_list.Count;
+        }
+
+        private void Apply_button_Click(object sender, EventArgs e)
+        {
+            if (work_layer_list[CurrentLayerIndex].Active_instr == (int)instruments.Обрезка
+                & work_layer_list[CurrentLayerIndex].Current_state == (int)states.Ждуприменения) {
+                Bitmap to_draw = work_layer_list[CurrentLayerIndex].ResizeBitmap(work_layer_list[CurrentLayerIndex].original, Work_space.Width, Work_space.Height,
+                                                               work_layer_list[CurrentLayerIndex].original.Width * work_layer_list[CurrentLayerIndex].scale / 100,
+                                                               work_layer_list[CurrentLayerIndex].original.Height * work_layer_list[CurrentLayerIndex].scale / 100,
+                                                               work_layer_list[CurrentLayerIndex].shift.X, work_layer_list[CurrentLayerIndex].shift.Y);
+
+                work_layer_list[CurrentLayerIndex].original = work_layer_list[CurrentLayerIndex].CropBitmap(to_draw, work_layer_list[CurrentLayerIndex].selection);
+                work_layer_list[CurrentLayerIndex].shift = new Point(0, 0);
+                work_layer_list[CurrentLayerIndex].scale = 100;
+                Scale.Value = 100;
+
+                Work_space.Image = DrawLayersList(work_layer_list);
+                Work_space.Refresh();
+            }
         }
     }
 }

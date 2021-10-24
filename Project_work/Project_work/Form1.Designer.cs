@@ -109,6 +109,7 @@ namespace Project_work
             this.toolTip1.SetToolTip(this.cropping, "Инструмент \"Обрезка\". Выделяет прямоугольную область и удаляет всё, что выходит з" +
         "а её пределы.");
             this.cropping.UseVisualStyleBackColor = false;
+            this.cropping.Click += new System.EventHandler(this.cropping_Click);
             // 
             // create_area
             // 
@@ -196,6 +197,7 @@ namespace Project_work
             this.toolTip1.SetToolTip(this.Apply_button, "Инструмент \"Подтвердить\". Выполняет подтверждение внесенных изменений на изображе" +
         "нии.");
             this.Apply_button.UseVisualStyleBackColor = false;
+            this.Apply_button.Click += new System.EventHandler(this.Apply_button_Click);
             // 
             // Work_space
             // 
@@ -268,7 +270,7 @@ namespace Project_work
             this.помощьToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(1038, 30);
+            this.menuStrip1.Size = new System.Drawing.Size(1038, 28);
             this.menuStrip1.TabIndex = 7;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -280,7 +282,7 @@ namespace Project_work
             this.сохранитьКакToolStripMenuItem});
             this.файлToolStripMenuItem.ForeColor = System.Drawing.Color.Black;
             this.файлToolStripMenuItem.Name = "файлToolStripMenuItem";
-            this.файлToolStripMenuItem.Size = new System.Drawing.Size(59, 26);
+            this.файлToolStripMenuItem.Size = new System.Drawing.Size(59, 24);
             this.файлToolStripMenuItem.Text = "Файл";
             // 
             // Open_from_file
@@ -311,7 +313,7 @@ namespace Project_work
             this.обрезатьToolStripMenuItem});
             this.редактированиеToolStripMenuItem.ForeColor = System.Drawing.Color.Black;
             this.редактированиеToolStripMenuItem.Name = "редактированиеToolStripMenuItem";
-            this.редактированиеToolStripMenuItem.Size = new System.Drawing.Size(137, 26);
+            this.редактированиеToolStripMenuItem.Size = new System.Drawing.Size(137, 24);
             this.редактированиеToolStripMenuItem.Text = "Редактирование";
             // 
             // переместитьToolStripMenuItem
@@ -341,7 +343,7 @@ namespace Project_work
             this.заливкаToolStripMenuItem});
             this.рисованиеToolStripMenuItem.ForeColor = System.Drawing.Color.Black;
             this.рисованиеToolStripMenuItem.Name = "рисованиеToolStripMenuItem";
-            this.рисованиеToolStripMenuItem.Size = new System.Drawing.Size(98, 26);
+            this.рисованиеToolStripMenuItem.Size = new System.Drawing.Size(98, 24);
             this.рисованиеToolStripMenuItem.Text = "Рисование";
             // 
             // кистьToolStripMenuItem
@@ -377,7 +379,7 @@ namespace Project_work
             this.цветовойБалансToolStripMenuItem});
             this.цветокоррекцияToolStripMenuItem.ForeColor = System.Drawing.Color.Black;
             this.цветокоррекцияToolStripMenuItem.Name = "цветокоррекцияToolStripMenuItem";
-            this.цветокоррекцияToolStripMenuItem.Size = new System.Drawing.Size(140, 26);
+            this.цветокоррекцияToolStripMenuItem.Size = new System.Drawing.Size(140, 24);
             this.цветокоррекцияToolStripMenuItem.Text = "Цветокоррекция";
             // 
             // насыщенностьToolStripMenuItem
@@ -408,14 +410,14 @@ namespace Project_work
             // 
             this.видToolStripMenuItem.ForeColor = System.Drawing.Color.Black;
             this.видToolStripMenuItem.Name = "видToolStripMenuItem";
-            this.видToolStripMenuItem.Size = new System.Drawing.Size(49, 26);
+            this.видToolStripMenuItem.Size = new System.Drawing.Size(49, 24);
             this.видToolStripMenuItem.Text = "Вид";
             // 
             // помощьToolStripMenuItem
             // 
             this.помощьToolStripMenuItem.ForeColor = System.Drawing.Color.Black;
             this.помощьToolStripMenuItem.Name = "помощьToolStripMenuItem";
-            this.помощьToolStripMenuItem.Size = new System.Drawing.Size(83, 26);
+            this.помощьToolStripMenuItem.Size = new System.Drawing.Size(83, 24);
             this.помощьToolStripMenuItem.Text = "Помощь";
             // 
             // Scale

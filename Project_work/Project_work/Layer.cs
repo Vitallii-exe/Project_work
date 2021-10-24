@@ -5,6 +5,7 @@ public class Layer
 {
     public Bitmap original;
     public int Active_instr = 0;
+    public int Current_state = -1;
 
     public Pen layer_pen = new Pen(Brushes.Black, 10.0f) { StartCap = System.Drawing.Drawing2D.LineCap.Round, EndCap = System.Drawing.Drawing2D.LineCap.Round };
     public Pen selection_pen = new Pen(Brushes.Black, 2) { DashStyle = System.Drawing.Drawing2D.DashStyle.Dash};
